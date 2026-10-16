@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="InventoryApp.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:InventoryApp.Converters"
+    Title="Inventory App"
+    BackgroundColor="{StaticResource MyBackgroundColor}"
+    Shell.NavBarIsVisible="True">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:PreviousPageVisibility x:Key="PreviousPageVisibilityConverter" />
+            <converters:NextPageVisibility x:Key="NextPageVisibilityConverter" />
+            <converters:QuantityColor x:Key="QuantityColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!--  Header  -->
+    <Shell.TitleView>
+        <Grid
+            Padding="0,0,8,0"
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="8">
+            <Label
+                Grid.Column="0"
+                FontAttributes="Bold"
+                FontSize="20"
+                LineBreakMode="TailTruncation"
+                Text="Inventory App"
+                VerticalOptions="Center" />
+            <Button
+                Grid.Column="1"
+                Margin="0,8"
+                Padding="16,0"
+                BackgroundColor="{StaticResource MyPrimaryButtonBackgroundColor}"
+                Clicked="OnAddClicked"
+                CornerRadius="10"
+                FontAttributes="Bold"
+                Text="+ Add"
+                VerticalOptions="Center" />
+        </Grid>
+    </Shell.TitleView>
+
+    <Grid
+        Padding="8"
+        RowDefinitions="Auto,*,Auto"
+        RowSpacing="8">
+
+        <!-- Search panel -->
+        <Border
+            Grid.Row="0"
+            Padding="16"
+            BackgroundColor="{StaticResource MyCardBackgroundColor}"
+            Stroke="{StaticResource MyBorderColor}"
+            StrokeShape="RoundRectangle 16"
+            StrokeThickness="1">
+            <VerticalStackLayout Spacing="8">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    Text="Find a product" />
+                <Border
+                    Padding="8,0"
+                    BackgroundColor="{StaticResource MyInputBackgroundColor}"
+                    Stroke="{StaticResource MyBorderColor}"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="1">
+                    <Entry
+                        ClearButtonVisibility="WhileEditing"
+                        Placeholder="Search name or barcode..."
+                        PlaceholderColor="{StaticResource MyLightLabelColor}"
+                        Text="{Binding SearchString, Mode=TwoWay}" />
+                </Border>
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                    <Button
+                        Grid.Column="0"
+                        BackgroundColor="{StaticResource MyAdditionalBackgroundColor}"
+                        Command="{Binding SearchByName}"
+                        CornerRadius="10"
+                        Text="Name" />
+                    <Button
+                        Grid.Column="1"
+                        BackgroundColor="{StaticResource MyAdditionalBackgroundColor}"
+                        Command="{Binding SearchByBarcode}"
+                        CornerRadius="10"
+                        Text="Barcode" />
+                    <Button
+                        Grid.Column="2"
+                        BackgroundColor="{StaticResource MySecondaryButtonBackgroundColor}"
+                        Command="{Binding ClearSearch}"
+                        CornerRadius="10"
+                        Text="Clear" />
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Product list -->
+        <CollectionView
+            Grid.Row="1"
+            ItemsSource="{Binding Products}"
+            SelectionMode="None"
+            VerticalScrollBarVisibility="Never">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout
+                    Padding="16"
+                    HorizontalOptions="Center"
+                    Spacing="8"
+                    VerticalOptions="Center">
+                    <Label
+                        FontAttributes="Bold"
+                        HorizontalTextAlignment="Center"
+                        Text="No products found" />
+                    <Label
+                        HorizontalTextAlignment="Center"
+                        Text="Try another search or add a new product."
+                        TextColor="{StaticResource MyLightLabelColor}" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+            
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border
+                        Margin="0,4"
+                        Padding="16"
+                        Background="{Binding Quantity, Converter={StaticResource QuantityColorConverter}}"
+                        Stroke="{StaticResource MyBorderColor}"
+                        StrokeShape="RoundRectangle 16"
+                        StrokeThickness="1">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnProductTapped" />
+                        </Border.GestureRecognizers>
+
+                        <Grid
+                            RowDefinitions="Auto,Auto,Auto"
+                            RowSpacing="8">
+                            <Label
+                                Grid.Row="0"
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                LineBreakMode="TailTruncation"
+                                Text="{Binding Name}" />
+                            <Grid
+                                Grid.Row="1"
+                                ColumnDefinitions="Auto,*"
+                                ColumnSpacing="8">
+                                <Label
+                                    Grid.Column="0"
+                                    FontAttributes="Bold"
+                                    Text="Barcode"
+                                    TextColor="{StaticResource MyLightLabelColor}"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    Text="{Binding Barcode}"
+                                    TextColor="#E0E0E0"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                            <Grid
+                                Grid.Row="2"
+                                ColumnDefinitions="*,Auto"
+                                ColumnSpacing="8">
+                                <VerticalStackLayout
+                                    Grid.Column="0"
+                                    Spacing="3">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        Text="Price"
+                                        TextColor="{StaticResource MyLightLabelColor}" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        Text="{Binding Price, StringFormat='{0}$'}" />
+                                </VerticalStackLayout>
+                                <VerticalStackLayout
+                                    Grid.Column="1"
+                                    HorizontalOptions="End"
+                                    Spacing="3">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        HorizontalTextAlignment="End"
+                                        Text="Quantity"
+                                        TextColor="{StaticResource MyLightLabelColor}" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding Quantity, StringFormat='{0}x'}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Pagination panel -->
+        <Border
+            Grid.Row="2"
+            Padding="16"
+            BackgroundColor="{StaticResource MyCardBackgroundColor}"
+            Stroke="{StaticResource MyBorderColor}"
+            StrokeShape="RoundRectangle 16"
+            StrokeThickness="1">
+            <VerticalStackLayout Spacing="8">
+                <Grid
+                    ColumnDefinitions="Auto,*,Auto,*,Auto"
+                    ColumnSpacing="8">
+                    <Button
+                        Grid.Column="0"
+                        Padding="9,0"
+                        BackgroundColor="{StaticResource MySecondaryButtonBackgroundColor}"
+                        Command="{Binding FirstPage}"
+                        CornerRadius="10"
+                        Text="« First" />
+                    <Button
+                        Grid.Column="1"
+                        Padding="4,0"
+                        BackgroundColor="{StaticResource MySecondaryButtonBackgroundColor}"
+                        Command="{Binding PreviousPage}"
+                        CornerRadius="10"
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding CurrentPage, Converter={StaticResource PreviousPageVisibilityConverter}}"
+                        Text="‹ Prev" />
+                    <Border
+                        Grid.Column="2"
+                        Padding="12,0"
+                        BackgroundColor="{StaticResource MyAdditionalBackgroundColor}"
+                        StrokeShape="RoundRectangle 10"
+                        StrokeThickness="0">
+                        <Label
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            Text="{Binding CurrentPage}"
+                            VerticalOptions="Center" />
+                    </Border>
+                    <Button
+                        Grid.Column="3"
+                        Padding="4,0"
+                        BackgroundColor="{StaticResource MySecondaryButtonBackgroundColor}"
+                        Command="{Binding NextPage}"
+                        CornerRadius="10"
+                        HorizontalOptions="Center"
+                        Text="Next ›">
+                        <Button.IsVisible>
+                            <MultiBinding Converter="{StaticResource NextPageVisibilityConverter}">
+                                <Binding Path="CurrentPage" />
+                                <Binding Path="TotalPages" />
+                            </MultiBinding>
+                        </Button.IsVisible>
+                    </Button>
+                    <Button
+                        Grid.Column="4"
+                        Padding="9,0"
+                        BackgroundColor="{StaticResource MySecondaryButtonBackgroundColor}"
+                        Command="{Binding LastPage}"
+                        CornerRadius="10"
+                        Text="Last »" />
+                </Grid>
+                <Grid
+                    ColumnDefinitions="*,Auto"
+                    ColumnSpacing="8">
+                    <Label
+                        Grid.Column="0"
+                        Text="{Binding NumberOfProducts, Mode=TwoWay, StringFormat='Total {0} products'}"
+                        TextColor="{StaticResource MyLightLabelColor}"
+                        VerticalOptions="Center" />
+                    <Label
+                        Grid.Column="1"
+                        Text="10 per page"
+                        TextColor="{StaticResource MyLightLabelColor}"
+                        VerticalOptions="Center" />
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="InventoryApp.Views.ProductDetailPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:InventoryApp.Converters"
+    Title="Inventory App"
+    BackgroundColor="{StaticResource MyBackgroundColor}"
+    Shell.NavBarIsVisible="True">
+
+    <!--  Header  -->
+    <Shell.TitleView>
+        <Grid Padding="0,0,8,0" ColumnDefinitions="*">
+            <Label
+                Grid.Column="0"
+                FontAttributes="Bold"
+                FontSize="20"
+                LineBreakMode="TailTruncation"
+                Text="Inventory App - Product details"
+                VerticalOptions="Center" />
+        </Grid>
+    </Shell.TitleView>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="8" Spacing="8">
+
+            <!--  Product information  -->
+            <Border
+                Padding="16"
+                BackgroundColor="{StaticResource MyCardBackgroundColor}"
+                Stroke="{StaticResource MyBorderColor}"
+                StrokeShape="RoundRectangle 16"
+                StrokeThickness="1">
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontSize="18"
+                        Text="Name"
+                        TextColor="{StaticResource MyLightLabelColor}" />
+                    <Border
+                        Padding="8,0"
+                        BackgroundColor="{StaticResource MyInputBackgroundColor}"
+                        Stroke="{StaticResource MyBorderColor}"
+                        StrokeShape="RoundRectangle 10"
+                        StrokeThickness="1">
+                        <Entry
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            IsReadOnly="{Binding ViewMode}"
+                            Keyboard="Text"
+                            Text="{Binding Name, Mode=TwoWay}" />
+                    </Border>
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Barcode" TextColor="{StaticResource MyLightLabelColor}" />
+                        <Border
+                            Padding="8,0"
+                            BackgroundColor="{StaticResource MyInputBackgroundColor}"
+                            Stroke="{StaticResource MyBorderColor}"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="1">
+                            <Entry
+                                IsReadOnly="{Binding ViewMode}"
+                                Keyboard="Text"
+                                Text="{Binding Barcode, Mode=TwoWay}" />
+                        </Border>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Price" TextColor="{StaticResource MyLightLabelColor}" />
+                        <Border
+                            Padding="8,0"
+                            BackgroundColor="{StaticResource MyInputBackgroundColor}"
+                            Stroke="{StaticResource MyBorderColor}"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="1">
+                            <Entry
+                                IsReadOnly="{Binding ViewMode}"
+                                Keyboard="Numeric"
+                                Text="{Binding Price, Mode=TwoWay, StringFormat='{0}'}" />
+                        </Border>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Quantity" TextColor="{StaticResource MyLightLabelColor}" />
+                        <Border
+                            Padding="8,0"
+                            BackgroundColor="{StaticResource MyInputBackgroundColor}"
+                            Stroke="{StaticResource MyBorderColor}"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="1">
+                            <Entry
+                                IsReadOnly="{Binding ViewMode}"
+                                Keyboard="Numeric"
+                                Text="{Binding Quantity, Mode=TwoWay}" />
+                        </Border>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <!--  Normal mode actions  -->
+            <VerticalStackLayout
+                Padding="16"
+                IsVisible="{Binding ViewMode}"
+                Spacing="8">
+                <Button
+                    BackgroundColor="{StaticResource MyPrimaryButtonBackgroundColor}"
+                    Command="{Binding EditProduct}"
+                    CornerRadius="10"
+                    Text="Edit product" />
+                <Button
+                    BackgroundColor="{StaticResource MyWarningColor}"
+                    Command="{Binding DeleteProduct}"
+                    CornerRadius="10"
+                    Text="Delete product" />
+
+            </VerticalStackLayout>
+
+            <!--  Edit mode actions  -->
+            <VerticalStackLayout
+                Padding="16"
+                IsVisible="{Binding EditMode}"
+                Spacing="8">
+                <Button
+                    BackgroundColor="{StaticResource MySaveButtonBackgroundColor}"
+                    Command="{Binding SaveProduct}"
+                    CornerRadius="10"
+                    Text="Save" />
+                <Button
+                    BackgroundColor="{StaticResource MySecondaryButtonBackgroundColor}"
+                    Command="{Binding DiscardChanges}"
+                    CornerRadius="10"
+                    Text="Discard" />
+
+                <Label Text="{Binding ProductValidation}" TextColor="{StaticResource MyWarningColor}" />
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
